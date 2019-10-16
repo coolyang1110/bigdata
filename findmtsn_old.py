@@ -3,11 +3,6 @@ import os
 import time
 import re
 
-INIFILE = 'setup.ini'
-L2IP = ''
-MTSN = ''
-MTSNBAK = ''
-mtsn_list_file = ''
 
 class tests:
     def __init__(self):
@@ -22,7 +17,7 @@ class tests:
 
     def parse_ini_file(self):
         config = ConfigParser.ConfigParser()
-        config.read(INIFILE)
+        config.read(self.INIFILE)
         self.L2IP = config.get('Server', 'l2ip').strip('\n')
         self.MTSN = config.get('Server', 'mtsn_folder').strip('\n')
         self.MTSNBAK = config.get('Server', 'mtsn_bak').strip('\n')
@@ -41,14 +36,10 @@ class tests:
             info_list = []
             pici_info = self.get_pici(ea)
             aod_info = self.get_aod(ea)
-            #item_info = self.get_flowctl(ea)
-            #zipfile = self.get_fail_mtsn(ea)
-            print 'zipfile is ' + zipfile
 
             info_list.append(ea)
             info_list.extend(pici_info)
             info_list.append(aod_info)
-            info_list.extend(item_info)
             mtsn_info.append(info_list)
         print mtsn_info
         return mtsn_info
@@ -94,7 +85,7 @@ class tests:
         folder = year + '-' + month
         fail_mtsn_path = os.path.join(fail_mtsn_root_path, folder)
 
-        zipfile = ''s
+        zipfile = ''
 
 
         return zipfile
@@ -118,14 +109,11 @@ class tests:
         for ea in lines:
             obj = re.match('.*AODOS.*', ea)
             if obj:
-                #print obj.group()
                 ship_os = obj.group().split('&')[1].strip('"')
-                #print ship_os  
         return ship_os
             
 
     def output(self, dict_w_list):
-        #key_list = dict_w_list.keys()
         str = ''
         str += 'MTSN' + '\t'
         str += 'TEST_GROUP' + '\t'
@@ -141,16 +129,16 @@ class tests:
             test_group = ea[1]
             bios_ver = ea[2]
             ship_os = ea[3]
-            fail_stage = ea[4]
-            fail_item = ea[5]
-            fail_script = ea[6]
+            #fail_stage = ea[4]
+            #fail_item = ea[5]
+            #fail_script = ea[6]
             str += mtsn + '\t'
             str += test_group + '\t'
             str += bios_ver + '\t'
             str += ship_os + '\t'
-            str += fail_stage + '\t'
-            str += fail_item + '\t'
-            str += fail_script + '\t'
+            #str += fail_stage + '\t'
+            #str += fail_item + '\t'
+            #str += fail_script + '\t'
             str += '\n'
         f = open(self.output_file, 'w')
         f.write(str)

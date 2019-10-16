@@ -5,7 +5,7 @@ import re
 
 class tests:
     def __init__(self):
-        self.INIFILE = 'findmtsn.ini'
+        self.INIFILE = 'setup.ini'
         self.L2IP = ''
         self.MTSN = ''
         self.MTSNBAK = ''
@@ -59,14 +59,11 @@ class tests:
         for ea in f:
             obj = re.match('.*AODOS.*', ea)
             if obj:
-                #print obj.group()
                 ship_os = obj.group().split('&')[1].strip('"')
-                #print ship_os  
         return ship_os
             
 
     def output(self, dict_w_list):
-        #key_list = dict_w_list.keys()
         str = ''
         str += 'MTSN' + '\t'
         str += 'TEST_GROUP' + '\t'
