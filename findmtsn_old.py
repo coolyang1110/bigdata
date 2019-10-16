@@ -27,22 +27,33 @@ class tests:
 
     def handle_process(self):
         print self.mtsn_list_file, self.mtsn_root
-        mtsn_info = []
         f = open(self.mtsn_list_file, 'r')
         mtsn_list = f.readlines()
         f.close()
+        self.output_init()
         for ea in mtsn_list:
             ea = ea.strip().strip('\n')
             info_list = []
-            pici_info = self.get_pici(ea)
-            aod_info = self.get_aod(ea)
+            try:
+                pici_info = self.get_pici(ea)
+                aod_info = self.get_aod(ea)
 
-            info_list.append(ea)
-            info_list.extend(pici_info)
-            info_list.append(aod_info)
-            mtsn_info.append(info_list)
-        print mtsn_info
-        return mtsn_info
+                info_list.append(ea)
+                info_list.extend(pici_info)
+                info_list.append(aod_info)
+                print info_list
+            except Exception:
+                print 'MTSN folder not found!'
+                info_list = [ea,'NA','NA','NA']
+            self.output(info_list)
+        return
+
+    def check_mtsn(self,mtsn):
+        mtsn_exists = False
+        mtsn_path = os.path.join(self.mtsn_root, mtsn)
+        if os.path.exists(mtsn_path):
+            mtsn_exists = True
+        return mtsn_exists
 
     def get_pici(self, mtsn):
         mtsn_path = os.path.join(self.mtsn_root, mtsn)
@@ -112,8 +123,7 @@ class tests:
                 ship_os = obj.group().split('&')[1].strip('"')
         return ship_os
             
-
-    def output(self, dict_w_list):
+    def output_init(self):
         str = ''
         str += 'MTSN' + '\t'
         str += 'TEST_GROUP' + '\t'
@@ -122,25 +132,30 @@ class tests:
         str += 'Fail Stage' + '\t'
         str += 'Fail Item' + '\t'
         str += 'Fail Script' + '\t'
-
         str += '\n'
-        for ea in dict_w_list:
-            mtsn = ea[0]
-            test_group = ea[1]
-            bios_ver = ea[2]
-            ship_os = ea[3]
-            #fail_stage = ea[4]
-            #fail_item = ea[5]
-            #fail_script = ea[6]
-            str += mtsn + '\t'
-            str += test_group + '\t'
-            str += bios_ver + '\t'
-            str += ship_os + '\t'
-            #str += fail_stage + '\t'
-            #str += fail_item + '\t'
-            #str += fail_script + '\t'
-            str += '\n'
-        f = open(self.output_file, 'w')
+        f = open(self.output_file, 'a')
+        f.write(str)
+        f.close()
+
+
+    def output(self, dict_w_list):
+        mtsn = dict_w_list[0]
+        test_group = dict_w_list[1]
+        bios_ver = dict_w_list[2]
+        ship_os = dict_w_list[3]
+        # fail_stage = ea[4]
+        # fail_item = ea[5]
+        # fail_script = ea[6]
+        str = ''
+        str += mtsn + '\t'
+        str += test_group + '\t'
+        str += bios_ver + '\t'
+        str += ship_os + '\t'
+        #str += fail_stage + '\t'
+        #str += fail_item + '\t'
+        #str += fail_script + '\t'
+        str += '\n'
+        f = open(self.output_file, 'a')
         f.write(str)
         f.close()
 
@@ -148,5 +163,5 @@ class tests:
 if __name__ == '__main__':
     self = tests()
     self.parse_ini_file()
-    mtsn_info = self.handle_process()
-    self.output(mtsn_info)
+    self.handle_process()
+    #self.output(mtsn_info)
